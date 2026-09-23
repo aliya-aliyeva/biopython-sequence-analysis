@@ -1,0 +1,124 @@
+from Bio import SeqIO
+
+filename = input("FASTA faylının adını yaz: ")
+
+records = list(SeqIO.parse(filename, "fasta"))
+
+print("Record sayı:", len(records))
+
+lengths = []
+
+for record in records:
+  lengths.append(len(record.seq))
+
+max_length = max(lengths)
+
+print(max_length)
+
+longest_ids = []
+
+for record in records:
+  if len(record.seq) == max_length:
+    longest_ids.append(record.id)
+
+print(longest_ids)
+
+min_length = min(lengths)
+
+print(min_length)
+
+shortest_ids = []
+
+for record in records:
+  if len(record.seq) == min_length:
+    shortest_ids.append(record.id)
+
+print(shortest_ids)
+
+for record in records:
+    print( record.id , len(record.seq) )
+
+frame = input("Reading frame adını yaz")
+
+frame = int(frame)
+
+frame_index = frame - 1
+
+longest_orf = 0
+
+orfs = []
+
+longest_orf_id = ""
+
+longest_orf_position = 0
+
+for record in records:
+    sequence = record.seq
+    for i in range(frame_index, len(sequence), 3):
+     codon = sequence[i : i + 3]
+     if codon == "ATG":
+          for j in range(i, len(sequence), 3):
+              stop_codon = sequence[j:j+3]
+              if stop_codon in ("TAG", "TAA", "TGA"):
+                  orf_length = j + 3 - i
+                  orfs.append((record.id, i + 1, orf_length))
+                  if orf_length > longest_orf:
+                      longest_orf = orf_length
+                      longest_orf_id = record.id 
+                      longest_orf_position = i + 1
+                  break
+
+for orf in orfs:
+    orf_id, position, length = orf
+    print("ID:", orf_id)
+    print("Position:", position)
+    print("Length:", length)
+
+sequence_id = input("Sequence ID yaz: ")
+
+sequence_orfs = []
+
+for orf in orfs:
+    orf_id, position, length = orf
+
+    if orf_id == sequence_id:
+        sequence_orfs.append((position, length))
+
+if sequence_orfs:
+    longest_sequence_orf = max(sequence_orfs, key=lambda x: x[1])
+
+    print("Longest ORF for this sequence:", longest_sequence_orf[1])
+    print("Starting position:", longest_sequence_orf[0])
+else:
+    print("Bu sequence ID üçün ORF tapılmadı.")
+
+print("Longest ORF:", longest_orf)
+
+print("ID:", longest_orf_id)
+
+print("Starting position:", longest_orf_position)
+
+n = int(input("Repeat length n yaz: "))
+
+repeat_counts = {}
+
+for record in records:
+    sequence = record.seq
+
+    for i in range(len(sequence) - n + 1):
+        repeat = sequence[i:i+n]
+        repeat_counts[repeat] = repeat_counts.get(repeat, 0) + 1
+
+most_frequent_count = max(repeat_counts.values())
+
+most_frequent_repeats = []
+
+for repeat, count in repeat_counts.items():
+    if count == most_frequent_count:
+        most_frequent_repeats.append(repeat)
+
+for repeat, count in repeat_counts.items():
+    print(repeat, count)
+
+print("Most frequent repeat:", most_frequent_repeats)
+print("Count:", most_frequent_count)
