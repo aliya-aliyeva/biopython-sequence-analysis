@@ -1,0 +1,24 @@
+def readGenome(filename):
+    genome = ''
+    with open(filename, 'r') as f:  #opening the file for reading
+        for line in f:
+            if not line[0] == '>':
+                genome += line.rstrip()  #rstrip() removes trailing whitespace, including the newline character.
+    return genome 
+genome = readGenome('lambda_virus.fa') 
+genome[:100] #first 100 bases of the genome
+
+print(genome[:100])
+
+print(len(genome))
+
+counts = {'A': 0, 'C': 0, 'G': 0, 'T': 0}  # initialize each frequency to zero
+for base in genome:
+    counts[base]+= 1 #increment the value at that key in our counts dictionary
+print(counts)
+
+import collections
+
+collections.Counter(genome)
+
+print(collections.Counter(genome)) #The output is a dictionary-like object containing each base and its frequency.
