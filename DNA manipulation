@@ -1,0 +1,33 @@
+def longestCommonPrefix(s1, s2): # Finds the longest common prefix of two sequences
+     i = 0       # start to check from first letter in sequence
+     while i < len(s1) and i < len(s2) and s1[i] == s2[i]:
+         i+= 1  #pass to the next letter
+     return s1[:i] #start from 0th index till i
+longestCommonPrefix('ACCATG', 'ACCAGAC')
+
+print(longestCommonPrefix('ACCATG', 'ACCAGAC'))
+
+def match(s1, s2):
+    if not len(s1) == len(s2):
+        return False
+
+    for i in range(len(s1)):  # Loops through each position in s1
+        if not s1[i] == s2[i]:
+            return False
+    return True  
+match('ATGCT', 'ATGCT')
+
+print(match('ATGCT', 'ATGCT'))
+
+complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}  # {} means library, complement dictionary
+
+print(complement['A']) 
+
+def reverseComplement(s):
+    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
+    t = ''
+    for base in s:
+        t = complement[base] + t
+    return t
+
+print(reverseComplement('ACCAGTCG'))
